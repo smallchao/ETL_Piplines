@@ -4,7 +4,9 @@ import sqlalchemy
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
-
+    '''
+    加载数据集并进行数据组装
+    '''
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     df = messages.merge(categories, how = 'left', on = ['id'])
@@ -12,7 +14,9 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
-
+    '''
+    数据清洗
+    '''
     categories = df['categories'].str.split(';', expand = True)
     row = categories.iloc[0]
 
@@ -31,7 +35,9 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
-
+    '''
+    将数据保存为数据库文件
+    '''
     engine = create_engine('sqlite:///'+database_filename)
     df.to_sql('DisasterData', engine, index=False, if_exists='replace')
 

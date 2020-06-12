@@ -34,7 +34,9 @@ nltk.download('wordnet')
 nltk.download('stopwords')
 
 def load_data(database_filepath):
-
+    '''
+    加载数据库文件
+    '''
     engine = create_engine('sqlite:///'+database_filepath)
     df = pd.read_sql_table('DisasterData', engine)
     X = df.message
@@ -43,7 +45,9 @@ def load_data(database_filepath):
     return X, y, category_names
 
 def tokenize(text):
-
+    '''
+    文本分词
+    '''
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
     words = word_tokenize(text)
     
@@ -53,7 +57,9 @@ def tokenize(text):
     return tokens
  
 def build_model_0():
-
+    '''
+    基础ML管道+网格搜索
+    '''
     pipeline = Pipeline([
         ('vectorizer', CountVectorizer(tokenizer=tokenize)),
         ('transformer', TfidfTransformer()),
@@ -69,7 +75,9 @@ def build_model_0():
     return cv
 
 def build_model():
-
+    '''
+    改进的ML管道+网格搜索
+    '''
     pipeline = Pipeline([
         ('vectorizer', CountVectorizer(tokenizer=tokenize)),
         ('transformer', TfidfTransformer()),
@@ -85,7 +93,9 @@ def build_model():
     return cv
 
 def evaluate_model(model, X_test, Y_test, category_names):
-
+    '''
+    模型验证
+    '''
     y_pred = model.predict(X_test)
     for i in range(10):
         print(classification_report(y_test[:,i],y_pred[:,i]))
@@ -94,8 +104,10 @@ def evaluate_model(model, X_test, Y_test, category_names):
  
 
 def save_model(model, model_filepath):
-
-    pickle.dump(pipeline, open('model.sav', 'wb'))
+    '''
+    模型保存
+    '''
+    pickle.dump(pipeline, open('model.pkl', 'wb'))
 
 
 def main():
